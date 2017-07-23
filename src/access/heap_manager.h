@@ -1,5 +1,6 @@
 #define CATALOG_PAGE 0
-
+#ifndef HEAP_MANAGER
+#define HEAP_MANAGER
 typedef enum {
     INT,
     TEXT
@@ -20,3 +21,9 @@ typedef struct {
     char *rel_name;
     TupleDescriptor *tuple_descriptor;
 } Relation;
+
+typedef struct {
+    int tuple_header_offset; //The number of bits before actual user data
+    //User data comes at the end
+} HeapTupleData;
+#endif

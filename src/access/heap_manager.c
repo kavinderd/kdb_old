@@ -23,21 +23,24 @@
  * The first page of a relation has schema information
  */
 void build_tuple_descriptor(Relation *rel, BufferPage *buf) {
-   int attr_count = 0;
-   TupleDescriptor *td = (TupleDescriptor *) malloc(sizeof(*td));
-   //First read the TupleDescriptor information from the page
-   memcpy((void *) td, (void *)buf->buffer, sizeof(*td));
-   //Allocate as many elements in the array of attribute data as there are attrs 
-   td->attrs = (AttributeData **) malloc(sizeof(AttributeData *) * td->attr_count);
+    if (buf->buffer == NULL)  {
+        return;
+    }
+    int attr_count = 0;
+    TupleDescriptor *td = (TupleDescriptor *) malloc(sizeof(*td));
+    //First read the TupleDescriptor information from the page
+    memcpy((void *) td, (void *)buf->buffer, sizeof(*td));
+    //Allocate as many elements in the array of attribute data as there are attrs 
+    td->attrs = (AttributeData **) malloc(sizeof(AttributeData *) * td->attr_count);
 
-   //For each attribute read its information off of the buffer and link it to the TupleDescriptor
-   for (int i = 0; i < td->attr_count; i++) {
+    //For each attribute read its information off of the buffer and link it to the TupleDescriptor
+    for (int i = 0; i < td->attr_count; i++) {
        AttributeData *ad = (AttributeData *) malloc(sizeof(*ad));
        memcpy((void *) ad, (void *) buf->buffer + sizeof(td) + (sizeof(ad) * i), sizeof(*ad));  
        td->attrs[i] = ad;
-   }
-   //Link the Relation to the TupleDescriptor
-   rel->tuple_descriptor = td;
+    }
+    //Link the Relation to the TupleDescriptor
+    rel->tuple_descriptor = td;
 }
 
 /*

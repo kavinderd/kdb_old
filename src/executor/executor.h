@@ -1,5 +1,7 @@
 #include "../planner/planner.h"
-
+#include "../access/heap_manager.h"
+#ifndef EXECUTOR_H
+#define EXECUTOR_H
 typedef enum {
     UNINITIALIZED,
     READY,
@@ -30,7 +32,11 @@ typedef struct {
     //The list of columns this node needs to project
     List* projection_list;
 
+    //The Heap Relation struct
+    Relation *relation;
+
     //Tuple offset
+    
 
 } ScanState;
 
@@ -40,4 +46,10 @@ typedef struct {
     PlanState* planstate;
 } ExecutionState;
 
+typedef struct {
+    HeapTupleData *heap_tuple;    
+} Tuple;
+
 void initialize_execution_state(QueryPlan* query_planning, ExecutionState* execution_state);
+
+#endif

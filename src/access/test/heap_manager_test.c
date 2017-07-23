@@ -8,6 +8,7 @@
 BufferPage *buffer_manager_get_page(char *rel_name, int page) {
     check_expected(rel_name);
     BufferPage *bp = (BufferPage *) malloc(sizeof(*bp));
+    bp->buffer=NULL;
     return bp;
 }
 void test_open_relation() {
@@ -44,10 +45,21 @@ void test_build_tuple_descriptor() {
    remove("/tmp/tup_desc");
 }
 
+void test_heap_get_next_tuple() {
+    //TODO:
+    //1. Write a file with the following data
+    // Page Header Data (# of tuples, length of a tuple, offset to free space, offset to latest written tuple)
+    // A single tuple at the end of the page
+    //
+    // Then add this page to a buf_page and pass it to heap_get_next_tuple, along with the relation struct.
+    // The function should succesfully read the single tuple from the page
+}
+
 int main(int argc, char* argv[]) {
     const struct CMUnitTest tests[] = {
-//        cmocka_unit_test(test_open_relation),
+        cmocka_unit_test(test_open_relation),
         cmocka_unit_test(test_build_tuple_descriptor),
+        cmocka_unit_test(test_heap_get_next_tuple)
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

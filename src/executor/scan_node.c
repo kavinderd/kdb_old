@@ -4,9 +4,10 @@
  * Get file descriptor for relation and do any other preperation
  */
 #include "executor.h"
+#include "../access/heap_manager.h"
 
-extern void open_relation(char *rel_name);
-extern void scan_next_tuple();
+extern Relation *heap_open_relation(char *rel_name);
+extern Tuple* heap_get_next_tuple();
 
 /*
  * Initialize scan does the following:
@@ -16,12 +17,10 @@ extern void scan_next_tuple();
  */
 void initialize_scan(ScanState* scan_state) {
     scan_state->status = READY;
-
-    if (scan_state->status == READY) {
-        open_relation(scan_state->rel_name);
-    }
+    Relation *rel = heap_open_relation(scan_state->rel_name);
+    scan_state->relation = rel;
 }
 
-void execute_scan(ScanState *scan_state) {
-    scan_next_tuple(); 
+Tuple* execute_scan(ScanState *scan_state) {
+    return heap_get_next_tuple(scan_state->relation); 
 }

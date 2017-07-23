@@ -8,13 +8,16 @@
 #include "../scan_node.c"
 #include "../../planner/planner.h"
 #include "../../utils/list.h"
+#include "../../access/heap_manager.h"
 
-void open_relation(char* rel_name) {
+Relation* heap_open_relation(char* rel_name) {
     check_expected(rel_name);
+    return (Relation *) mock();
 }
 
-void scan_next_tuple() {
+Tuple* heap_get_next_tuple(Relation* rel) {
     function_called();
+    return NULL;
 }
 
 ScanState* setup() {
@@ -36,14 +39,17 @@ ScanState* setup() {
 
 void test_initialize_scan() {
     ScanState *ss = setup();
-    expect_any(open_relation, rel_name);
+    Relation *rel = (Relation *) malloc(sizeof(*rel));
+    will_return(heap_open_relation, rel);
+    expect_any(heap_open_relation, rel_name);
     initialize_scan(ss);
+    assert_non_null(ss->relation);
 }
 
 void test_execute_scan() {
     ScanState *ss = setup();
     ss->status = READY;
-    expect_function_call(scan_next_tuple);
+    expect_function_call(heap_get_next_tuple);
     execute_scan(ss);
 }
 
