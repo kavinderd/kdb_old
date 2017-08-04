@@ -46,13 +46,45 @@ void test_build_tuple_descriptor() {
 }
 
 void test_heap_get_next_tuple() {
-    //TODO:
     //1. Write a file with the following data
     // Page Header Data (# of tuples, length of a tuple, offset to free space, offset to latest written tuple)
     // A single tuple at the end of the page
     //
     // Then add this page to a buf_page and pass it to heap_get_next_tuple, along with the relation struct.
     // The function should succesfully read the single tuple from the page
+    TuplePageHeaderData *data = (TuplePageHeaderData *) malloc(sizeof(*data));
+    data->tuple_count = 1;
+    data->tup_length = sizeof(HeapTupleData) + 4;
+    data->offset_to_free_space = 20;
+    data->offset_to_last_tuple = PAGE_SIZE - data->tup_length;
+    FILE *tmp = fopen("/tmp/one_tup", "wb");
+    fwrite(data, sizeof(*data), 1, tmp);
+    HeapTupleData *heap_data = (HeapTupleData *) malloc(sizeof(*heap_data));
+    heap_data->tuple_header_offset = 4;
+    fseek(tmp, PAGE_SIZE - data->tup_length, SEEK_SET);
+    long sz = ftell(tmp);
+    fwrite(heap_data, sizeof(*heap_data), 1, tmp);
+    sz = ftell(tmp);
+    int val = 8;
+    fwrite(&val, sizeof(int), 1, tmp);
+    sz = ftell(tmp);
+    fclose(tmp);
+    Relation *rel = (Relation *) malloc(sizeof(*rel));
+    BufferPage *buf_page = (BufferPage *) malloc(sizeof(*buf_page));
+    buf_page->rel_name = "test";
+    buf_page->buffer = (char *) malloc(8192);
+    fseek(tmp, 0, SEEK_SET);
+    fclose(tmp);
+    tmp = fopen("/tmp/one_tup", "rb");
+    fread(buf_page->buffer, sizeof(char), 8192, tmp);
+    fclose(tmp);
+    rel->cur_buf_page = buf_page;
+    rel->cur_buffer_position = 0;
+    HeapTupleData *hp = heap_get_next_tuple(rel);
+    assert_non_null(hp);
+    assert_int_equal(hp->tuple_header_offset, 4);
+    assert_int_equal(*(int *) ((char *)hp + 4), 8);
+    remove("/tmp/one_tup");
 }
 
 int main(int argc, char* argv[]) {

@@ -67,6 +67,21 @@ Relation * heap_open_relation(char *rel_name) {
     //Have the buffer manager read the first page of the relation into the buffer pool 
     BufferPage *buf_page = buffer_manager_get_page(rel_name, CATALOG_PAGE);
     build_tuple_descriptor(relation, buf_page);
+    relation->cur_buffer_position = -1;
     return relation;
 }
 
+HeapTupleData *heap_get_next_tuple(Relation *rel) {
+    if (rel->cur_buf_page) {
+        //We have a buffer page
+        if (rel->cur_buffer_position == 0) {
+            //We have not read a single tuple from this page yet
+            TuplePageHeaderData* header_data = (TuplePageHeaderData *) malloc(sizeof(*header_data));
+            memcpy((void *) header_data, (void *)rel->cur_buf_page->buffer, sizeof(*header_data));
+            HeapTupleData *data = (HeapTupleData *) malloc(sizeof(*data));
+            memcpy((void *) data, (void*) (rel->cur_buf_page->buffer + header_data->offset_to_last_tuple), header_data->tup_length);
+            return data;
+        }
+    }
+    return NULL;
+}
