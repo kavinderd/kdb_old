@@ -1,4 +1,5 @@
 #include "../utils/list.h"
+#include "../parser/parser.h"
 #ifndef PLANNER_H
 #define PLANNER_H
 typedef enum {
@@ -20,4 +21,6 @@ typedef struct {
 typedef struct {
     Plan* root; 
 } QueryPlan;
+
+extern QueryPlan* generate_plan(ParseNode *pn);
 #endif

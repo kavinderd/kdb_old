@@ -9,8 +9,6 @@
 
 #include <assert.h>
 #include <stdlib.h>
-
-#include "../parser/parser.h"
 #include "planner.h"
 
 /*

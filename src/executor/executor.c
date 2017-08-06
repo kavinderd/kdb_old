@@ -23,7 +23,9 @@ void initialize_execution_state(QueryPlan* query_plan, ExecutionState* execution
     initialize_execution_node(query_plan->root, execution_state);
 }
 
-void execute_plan(PlanState* plan_state) {
+//TODO: Change the argument from a PlanState to an Estate
+void execute_plan(ExecutionState* execution_state) {
+    PlanState* plan_state = execution_state->planstate;
     switch(plan_state->type) {
         case SCAN_STATE:
             execute_scan(plan_state);

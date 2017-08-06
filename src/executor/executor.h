@@ -51,5 +51,6 @@ typedef struct {
 } Tuple;
 
 void initialize_execution_state(QueryPlan* query_planning, ExecutionState* execution_state);
+void execute_plan(ExecutionState *plan_state);
 
 #endif

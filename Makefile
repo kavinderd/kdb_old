@@ -28,7 +28,7 @@ clean:
 	rm -rf *.dSYM
 
 ## TEST MAKE TARGETS
-check: $(OBJ) utils_test query_processing_test heap_manager_test storage_test
+check: $(OBJ) utils_test query_processing_test heap_manager_test storage_test server_test
 query_processing_test: lexer_test parser_test planner_test executor_test scan_node_test
 lexer_test: $(OBJ)
 	$(CC) $(CFLAGS) -o lexer_test.t src/parser/test/lexer_test.c -I $(TEST_INCLUDE) -lcmocka
@@ -82,6 +82,13 @@ storage_manager_test: $(OBJ)
 	$(CC) $(CFLAGS)  -o storage_manager_test.t $(BUFFER_MANAGER_TEST_DIR)/storage_manager_test.c -I ${TEST_INCLUDE} -lcmocka 
 	./storage_manager_test.t
 
+## Server Test
+
+SERVER_TEST_DIR=src/server/test
+server_test: $(OBJ)
+	$(CC) $(CFLAGS)  -o server_test.t $(SERVER_TEST_DIR)/server_test.c -I ${TEST_INCLUDE} -lcmocka 
+	./server_test.t
 
 
-.PHONY:  clean compile all utils_test list_test lexer_test parser_test planner_test executor_test scan_node_test query_processing_test test heap_manager_test storage_test buffer_manager_test buffer_test storage_manager_test
+
+.PHONY:  clean compile all utils_test list_test lexer_test parser_test planner_test executor_test scan_node_test query_processing_test test heap_manager_test storage_test buffer_manager_test buffer_test storage_manager_test server_test

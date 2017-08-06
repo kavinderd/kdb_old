@@ -43,7 +43,7 @@ void test_execute_plan() {
     ExecutionState* es = (ExecutionState*) malloc(sizeof(*es));
     initialize_execution_state(qp, es);
     expect_any(execute_scan, node);
-    execute_plan(es->planstate);
+    execute_plan(es);
 }
 
 int main(int argc, char* argv[]) {
