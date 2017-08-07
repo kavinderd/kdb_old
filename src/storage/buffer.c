@@ -3,6 +3,7 @@
  *
  * All functions related to accessing buffer pool pages can be found here
  */
+#include <stdlib.h>
 #include "buffer_manager.h"
 #include "buffer.h"
 

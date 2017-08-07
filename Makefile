@@ -7,15 +7,15 @@ EXECUTOR_TEST_DIR=src/executor/test
 TEST_INCLUDE=/usr/local/include/
 CFLAGS=-g -O0
 
-VPATH= src:src/parser:src/planner:src/executor:src/utils:src/parser/test
+VPATH= src:src/parser:src/planner:src/executor:src/utils:src/parser/test:src/storage/:src/access:src/server
 OBJDIR:=build
-OBJ:=$(addprefix $(OBJDIR)/, list.o parser.o lexer.o planner.o executor.o scan_node.o buffer_manager.o buffer.o storage_manager.o)
+OBJ:=$(addprefix $(OBJDIR)/, list.o parser.o lexer.o planner.o executor.o scan_node.o buffer_manager.o buffer.o storage_manager.o server.o heap_manager.o)
 SRC=main.c list.c lexer.c
 
 $(OBJDIR)/%.o : %.c %.h
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
-all: $(OBJ) check
+all: $(OBJ)
 	$(CC) $(CFLAGS) -o kdb src/main.c $^
 $(OBJ): | $(OBJDIR)
 
