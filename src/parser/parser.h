@@ -10,7 +10,12 @@ typedef enum {
     SEL_LIST_MEMBER,
     FROM,
     REL_LIST,
-    REL_LIST_MEMBER
+    REL_LIST_MEMBER,
+    CREATE_TABLE,
+    REL_NAME,
+    ATTR_LIST,
+    ATTR_LIST_MEMBER
+
 } ParseNodeType;
 typedef struct {
     ParseNodeType type;

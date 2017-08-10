@@ -69,10 +69,44 @@ void test_complex_select() {
     assert_string_equal(((ParseNode*)rel_list->children->head->ptr)->value, "foo");
 }
 
+void test_create_table() {
+    char *string = "create table foo(a int);";
+    static Token create_tok = {KEYWORD_create, "create"};
+    static Token table_tok = {KEYWORD_table, "table"};
+    static Token table_name_tok = { IDENTIFIER, "foo"};
+    static Token open_parens_tok = {OPEN_PARENS, "("};
+    static Token a_tok = {IDENTIFIER, "a"};
+    static Token type_tok = {KEYWORD_int, "int"};
+    static Token closed_parens_tok = {CLOSED_PARENS, ")"};
+    static Token semicolon = { SEMICOLON, ";"};
+    Token* stub[] = {&create_tok, &table_tok, &table_name_tok, &open_parens_tok, &a_tok, &type_tok,&closed_parens_tok, &semicolon};
+    will_return_count(lex, stub, 1);
+
+    ParseNode* node = parse(string);
+    assert(node != NULL);
+    assert(node->type == EXPR);
+    assert(node->children);
+    List* list = node->children;
+    ListItem* li = list->head;
+    assert(((ParseNode*) (li)->ptr)->type == CREATE_TABLE);
+    li = li->next;
+    assert(((ParseNode*) (li)->ptr)->type == REL_NAME);
+    assert_string_equal(((ParseNode*) (li)->ptr)->value, "foo");
+    li = li->next;
+    assert(((ParseNode*) (li)->ptr)->type == ATTR_LIST);
+    li = ((ParseNode*) li->ptr)->children->head;
+    assert(((ParseNode*) (li)->ptr)->type == ATTR_LIST_MEMBER);
+    li = ((ParseNode*) li->ptr)->children->head;
+    assert_string_equal(((ParseNode*) li->ptr)->value, "a");
+    li = li->next;
+    assert_string_equal(((ParseNode*) (li)->ptr)->value, "int");
+}
+
 int main(int argc, char* argv[]) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_select_1),
-        cmocka_unit_test(test_complex_select)
+        cmocka_unit_test(test_complex_select),
+        cmocka_unit_test(test_create_table)
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
